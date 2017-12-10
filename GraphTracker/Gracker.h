@@ -20,7 +20,7 @@
 struct GraConfig{
 	int		nWarppingMode = WARPPINGMODE_PERSPECTIVE;
 	int     nDescType = TYPE_SIFT;
-	int     nModelGrids = 5;
+	int     nModelGrids = 10;
 	int		nMaxIter = 1;
 	bool	bPredictShape = false;
 //	bool    bUpdateDesc = false;

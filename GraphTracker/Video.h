@@ -42,6 +42,7 @@ public:
 	bool ReadFrame(cv::Mat& rFrame);
 	bool ReadFrame(std::string& file, cv::Mat& rFrame);
 	inline void Rewind() { m_frameIdx = 0; }
+	bool isVideoCapOpen();
 	
 private:
 	

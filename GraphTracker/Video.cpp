@@ -102,3 +102,8 @@ bool Video::ReadFrame(std::string& file, cv::Mat& rFrame)
 
 	return !rFrame.empty();
 }
+
+bool Video::isVideoCapOpen(){
+	if (m_videoCap.isOpened()) return true;
+	return false;
+}

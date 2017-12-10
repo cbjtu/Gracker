@@ -194,51 +194,56 @@ vector<float> parseDigit(const char* buf)
 
 IplImage *src = 0;
 vector<Point2f> initPointProducer;
+Video* pVideoInput = 0;
 int endflag = 0;
 void on_mouse(int event, int x, int y, int flags, void *ustc){
 	CvFont font;
 	cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1, CV_AA);
 	if (event == CV_EVENT_LBUTTONDOWN){
 		CvPoint pt = cvPoint(x, y);
-		initPointProducer.push_back(Point2f(x, y));
+		//cout << x << ' ' << y << endl;
+		initPointProducer.push_back(Point2f((float)x, (float)y));
 		char temp[16];
 		sprintf_s(temp, "(%d,%d)", pt.x, pt.y);
 		cvPutText(src,temp, pt, &font, cvScalar(255, 255, 255, 0));
 		cvCircle(src, pt, 2, cvScalar(0, 0, 255, 0), CV_FILLED, CV_AA, 0);
 		cvShowImage("src", src);
 		endflag++;
-		if (endflag == 4){
+		/*if (endflag == 4){
 			cvDestroyWindow("src");
 			cvReleaseImage(&src);
-		}
+		}*/
 	}
 }
 
 vector<Point2f> getPointsMouse(){
 	initPointProducer.clear();
 	endflag = 0;
-
-	src = cvLoadImage("imagetest.jpg", 1);
+	Mat InitMat;
+	pVideoInput->ReadFrame(InitMat);
+	src = new IplImage(InitMat);
 	cvNamedWindow("src", 1);
-	cvSetMouseCallback("src", on_mouse, 0);
 	cvShowImage("src", src);
+	cvSetMouseCallback("src", on_mouse, 0);
 	cvWaitKey(0);
+	cvDestroyWindow("src");
+	for (int i = 0; i < initPointProducer.size(); i++) cout << initPointProducer[i] << endl;
 	return initPointProducer;
 }
 
 TResult processVideo(GraConfig& grac) 
 {
-	Video* pVideoInput = 0;
 	VideoWriter writer;
 	vector<Point2f> initPoints, warpSrc;
 	pVideoInput = new Video(0, 0, 1);
 
-	Mat show;
-	while (1){
+	/*Mat show;
+	while (pVideoInput->isVideoCapOpen()){
 		pVideoInput->ReadFrame(show);
 		imshow("test", show);
 		if (waitKey(20)) break;
 	}
+	cout << "exit" << endl;*/
 
 	Gracker GM(grac);
 	GM.setQuietMode(bQuietMode);
@@ -246,7 +251,6 @@ TResult processVideo(GraConfig& grac)
 
 	int frameIdx = 0;
 	for (frameIdx = 0;; ++frameIdx){
-		vector<Point2f> gtPoints = getPointsMouse();
 		bool ok = false;
 		ok = pVideoInput->ReadFrame(frame);
 		if (!ok) break;
@@ -257,6 +261,7 @@ TResult processVideo(GraConfig& grac)
 		int imgH = frameGrey.rows;
 
 		if (frameIdx == 0){
+			vector<Point2f> gtPoints = getPointsMouse();
 			initPoints.clear();
 			initPoints.assign(gtPoints.begin(), gtPoints.end());
 
