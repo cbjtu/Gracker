@@ -3,6 +3,9 @@ Introduction
 
 This page contains software and instructions for [Gracker: A Graph-based Planar Object Tracker](1).  
 
+It is a project for practice, finished by Bingjun Chen(bingjun@bjtu.edu.cn) and guided by Tao Wang(twang@bjtu.edu.cn) from Beijing Jiaotong U, who made the majority of work.
+
+It can detect things by the initial points, using the videocapture.
 
 Instructions
 ============
